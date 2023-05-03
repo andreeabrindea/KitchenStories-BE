@@ -49,6 +49,7 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUsersById(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -71,6 +72,7 @@ func GetUsersById(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 func CreateUser(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	// Parse the JSON request body into a User struct
 	var user db.User
 	err := json.NewDecoder(r.Body).Decode(&user)
@@ -96,6 +98,7 @@ type LoginRequest struct {
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	// Parse the login request from the request body
 	var loginReq LoginRequest
 	err := json.NewDecoder(r.Body).Decode(&loginReq)
