@@ -97,6 +97,12 @@ type LoginRequest struct {
 	Password string `json:"password"`
 }
 
+type LoginResponse struct {
+	UserID       int       `json:"user_id"`
+	SessionToken string    `json:"session_token"`
+	Expiry       time.Time `json:"expiry"`
+}
+
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	// Parse the login request from the request body
@@ -146,7 +152,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		Secure:   true,
 	})
 
-	loginResp := db.Session{
+	// Construct the response struct
+	loginResp := LoginResponse{
 		UserID:       session.UserID,
 		SessionToken: session.SessionToken,
 		Expiry:       session.Expiry,
@@ -159,9 +166,5 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	_, err = w.Write(jsonResp)
-	if err != nil {
-		return
-	}
-
+	w.Write(jsonResp)
 }

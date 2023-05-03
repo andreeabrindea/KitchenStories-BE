@@ -110,7 +110,7 @@ func GetUserByUsername(username string) (User, error) {
 	}
 	defer conn.Close(context.Background())
 
-	row, err := conn.Query(context.Background(), "SELECT id, username, email, password, country, city FROM Users WHERE username=$1", username)
+	row, err := conn.Query(context.Background(), "SELECT id, username, email, password, country FROM Users WHERE username=$1", username)
 	if err != nil {
 		return User{}, err
 	}
