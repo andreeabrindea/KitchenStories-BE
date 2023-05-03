@@ -11,8 +11,12 @@ import (
 	"time"
 )
 
-func enableCors(w *http.ResponseWriter) {
+func enableCors(r *http.Request, w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Methods", "POST")
+	(*w).Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
 }
 
 func ParseIDFromPath(r *http.Request) (int, error) {
@@ -30,7 +34,7 @@ func ParseIDFromPath(r *http.Request) (int, error) {
 }
 
 func GetAllUsers(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	enableCors(r, &w)
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -49,7 +53,7 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUsersById(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	enableCors(r, &w)
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -72,7 +76,7 @@ func GetUsersById(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	enableCors(r, &w)
 	// Parse the JSON request body into a User struct
 	var user db.User
 	err := json.NewDecoder(r.Body).Decode(&user)
@@ -104,7 +108,7 @@ type LoginResponse struct {
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	enableCors(r, &w)
 	// Parse the login request from the request body
 	var loginReq LoginRequest
 	err := json.NewDecoder(r.Body).Decode(&loginReq)

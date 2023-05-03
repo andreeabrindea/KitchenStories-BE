@@ -7,7 +7,7 @@ import (
 )
 
 func GetAllRecipes(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
+	enableCors(r, &w)
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -26,6 +26,7 @@ func GetAllRecipes(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetRecipesById(w http.ResponseWriter, r *http.Request) {
+	enableCors(r, &w)
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -48,6 +49,7 @@ func GetRecipesById(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 func AddRecipe(w http.ResponseWriter, r *http.Request) {
+	enableCors(r, &w)
 	// Parse the JSON request body into a User struct
 	var recipe db.Recipe
 	err := json.NewDecoder(r.Body).Decode(&recipe)
