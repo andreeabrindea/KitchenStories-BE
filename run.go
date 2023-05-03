@@ -14,7 +14,27 @@ func main() {
 	)
 	http.HandleFunc(
 		"/api/getRecipes/{id}",
-		handlers.GetAllRecipes,
+		handlers.GetRecipesById,
+	)
+	http.HandleFunc(
+		"/api/getUsers",
+		handlers.GetAllUsers,
+	)
+	http.HandleFunc(
+		"/api/getUsers/{id}",
+		handlers.GetUsersById,
+	)
+	http.HandleFunc(
+		"/api/users",
+		handlers.CreateUser,
+	)
+	http.HandleFunc(
+		"/login",
+		handlers.LoginHandler)
+
+	http.HandleFunc(
+		"/api/recipes",
+		handlers.AddRecipe,
 	)
 
 	err := http.ListenAndServe(":8080", nil)
