@@ -27,6 +27,7 @@ func GetAllRecipes(w http.ResponseWriter, r *http.Request) {
 
 func GetRecipesById(w http.ResponseWriter, r *http.Request) {
 	enableCors(r, &w)
+
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -49,16 +50,28 @@ func GetRecipesById(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 func AddRecipe(w http.ResponseWriter, r *http.Request) {
-	enableCors(r, &w)
-	// Parse the JSON request body into a User struct
-	var recipe db.Recipe
+	if r.Method == "OPTIONS" {
+		w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
+		w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	// Set headers for the main request
+	w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+
+	// Parse the JSON request body into a RecipeAdd struct
+	var recipe db.RecipeAdd
 	err := json.NewDecoder(r.Body).Decode(&recipe)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
-	// Insert the recipe into the database
 	err = db.InsertRecipe(recipe)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

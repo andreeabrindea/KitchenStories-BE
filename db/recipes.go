@@ -77,7 +77,7 @@ func GetRecipesById(connection string, id int) ([]Recipe, error) {
 	return recipes, nil
 }
 
-func InsertRecipe(recipe Recipe) error {
+func InsertRecipe(recipe RecipeAdd) error {
 	// Open a database connection
 	db, err := sql.Open("postgres", "postgres://ejyvmpli:6ADd6xq0YUrVCyH0I7s1nfCT1Qv5gMVw@mouse.db.elephantsql.com/ejyvmpli")
 	if err != nil {
@@ -86,7 +86,7 @@ func InsertRecipe(recipe Recipe) error {
 	defer db.Close()
 
 	// Execute the SQL INSERT statement
-	stmt, err := db.Prepare("INSERT INTO Recipe(id, name, user_id, photo, ingredients, instructions) VALUES ($1, $2, $3, $4, $5, $6)")
+	stmt, err := db.Prepare("INSERT INTO Recipe (id, name, user_id, photo, ingredients, instructions) VALUES ($1, $2, $3, $4, $5, $6)")
 	if err != nil {
 		return err
 	}
