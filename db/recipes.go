@@ -8,7 +8,7 @@ import (
 )
 
 func GetAllRecipes(connection string) ([]Recipe, error) {
-	conn, err := pgx.Connect(context.Background(), connection)
+	conn, err := pgx.Connect(context.Background(), "postgres://ejyvmpli:6ADd6xq0YUrVCyH0I7s1nfCT1Qv5gMVw@mouse.db.elephantsql.com/ejyvmpli")
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
@@ -20,7 +20,7 @@ func GetAllRecipes(connection string) ([]Recipe, error) {
 		}
 	}(conn, context.Background())
 
-	rows, err := conn.Query(context.Background(), "SELECT * FROM Recipe")
+	rows, err := conn.Query(context.Background(), "SELECT r.id, r.name as recipe_name, u.username as user_name, r.photo, r.ingredients, r.instructions FROM Recipe r JOIN Users u ON r.user_id = u.id")
 	if err != nil {
 		return nil, err
 	}
