@@ -12,7 +12,7 @@ func GetAllRecipes(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	recipes, err := db.GetAllRecipes("postgres://ejyvmpli:6ADd6xq0YUrVCyH0I7s1nfCT1Qv5gMVw@mouse.db.elephantsql.com/ejyvmpli")
+	recipes, err := db.GetAllRecipes()
 	if err != nil {
 		return
 	}

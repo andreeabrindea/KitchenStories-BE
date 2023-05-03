@@ -3,11 +3,22 @@ package db
 import (
 	"context"
 	"database/sql"
+	"encoding/base64"
 	"github.com/jackc/pgx/v5"
+	"html/template"
 	"log"
 )
 
-func GetAllRecipes(connection string) ([]Recipe, error) {
+type RecipeHTML struct {
+	ID           int
+	Name         string
+	UserID       string
+	Photo        template.URL // use template.URL to prevent escaping of HTML characters
+	Ingredients  string
+	Instructions string
+}
+
+func GetAllRecipes() ([]RecipeHTML, error) {
 	conn, err := pgx.Connect(context.Background(), "postgres://ejyvmpli:6ADd6xq0YUrVCyH0I7s1nfCT1Qv5gMVw@mouse.db.elephantsql.com/ejyvmpli")
 	if err != nil {
 		log.Fatal(err)
@@ -26,14 +37,23 @@ func GetAllRecipes(connection string) ([]Recipe, error) {
 	}
 	defer rows.Close()
 
-	var recipes []Recipe
+	var recipes []RecipeHTML
 	for rows.Next() {
 		recipe := Recipe{}
 		err = rows.Scan(&recipe.ID, &recipe.Name, &recipe.UserID, &recipe.Photo, &recipe.Ingredients, &recipe.Instructions)
 		if err != nil {
 			return nil, err
 		}
-		recipes = append(recipes, recipe)
+		// base64 decode the photo data and set it to a template.URL type
+		recipeHTML := RecipeHTML{
+			ID:           recipe.ID,
+			Name:         recipe.Name,
+			UserID:       recipe.UserID,
+			Photo:        template.URL("data:image/png;base64," + base64.StdEncoding.EncodeToString(recipe.Photo)),
+			Ingredients:  recipe.Ingredients,
+			Instructions: recipe.Instructions,
+		}
+		recipes = append(recipes, recipeHTML)
 	}
 	err = rows.Err()
 	if err != nil {
@@ -42,7 +62,7 @@ func GetAllRecipes(connection string) ([]Recipe, error) {
 	return recipes, nil
 }
 
-func GetRecipesById(connection string, id int) ([]Recipe, error) {
+func GetRecipesById(connection string, id int) ([]RecipeHTML, error) {
 	conn, err := pgx.Connect(context.Background(), connection)
 	if err != nil {
 		log.Fatal(err)
@@ -61,14 +81,23 @@ func GetRecipesById(connection string, id int) ([]Recipe, error) {
 	}
 	defer rows.Close()
 
-	var recipes []Recipe
+	var recipes []RecipeHTML
 	for rows.Next() {
 		recipe := Recipe{}
 		err = rows.Scan(&recipe.ID, &recipe.Name, &recipe.UserID, &recipe.Photo, &recipe.Ingredients, &recipe.Instructions)
 		if err != nil {
 			return nil, err
 		}
-		recipes = append(recipes, recipe)
+		// base64 decode the photo data and set it to a template.URL type
+		recipeHTML := RecipeHTML{
+			ID:           recipe.ID,
+			Name:         recipe.Name,
+			UserID:       recipe.UserID,
+			Photo:        template.URL("data:image/png;base64," + base64.StdEncoding.EncodeToString(recipe.Photo)),
+			Ingredients:  recipe.Ingredients,
+			Instructions: recipe.Instructions,
+		}
+		recipes = append(recipes, recipeHTML)
 	}
 	err = rows.Err()
 	if err != nil {
