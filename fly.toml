@@ -1,6 +1,6 @@
-# fly.toml file generated for kitchenstoriesbe on 2023-05-03T15:42:05+03:00
+# fly.toml file generated for white-meadow-2195 on 2023-05-03T19:13:56+03:00
 
-app = "kitchenstoriesbe"
+app = "white-meadow-2195"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []

@@ -30,7 +30,7 @@ func GetRecipesById(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	id, err := ParseIDFromQueryString(r)
+	id, err := ParseIDFromPath(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return

@@ -13,7 +13,7 @@ func main() {
 		handlers.GetAllRecipes,
 	)
 	http.HandleFunc(
-		"/api/getRecipes/{id}",
+		"/api/getRecipes/",
 		handlers.GetRecipesById,
 	)
 	http.HandleFunc(
@@ -21,7 +21,7 @@ func main() {
 		handlers.GetAllUsers,
 	)
 	http.HandleFunc(
-		"/api/getUsers/{id}",
+		"/api/getUsers/",
 		handlers.GetUsersById,
 	)
 	http.HandleFunc(

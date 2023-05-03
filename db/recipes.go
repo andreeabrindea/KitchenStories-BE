@@ -55,7 +55,7 @@ func GetRecipesById(connection string, id int) ([]Recipe, error) {
 		}
 	}(conn, context.Background())
 
-	rows, err := conn.Query(context.Background(), "SELECT * FROM Recipe WHERE id=$1", id)
+	rows, err := conn.Query(context.Background(), "SELECT r.id, r.name as recipe_name, u.username as user_name, r.photo, r.ingredients, r.instructions FROM Recipe r JOIN Users u ON r.user_id = u.id WHERE r.id=$1", id)
 	if err != nil {
 		return nil, err
 	}

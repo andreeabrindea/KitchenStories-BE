@@ -31,7 +31,7 @@ func GetAllUsers(connection string) ([]User, error) {
 	var users []User
 	for rows.Next() {
 		user := User{}
-		err = rows.Scan(&user.ID, &user.UserName, &user.Email, &user.Password, &user.Country, &user.City)
+		err = rows.Scan(&user.ID, &user.UserName, &user.Email, &user.Password, &user.Country)
 		if err != nil {
 			return nil, err
 		}
@@ -44,7 +44,7 @@ func GetAllUsers(connection string) ([]User, error) {
 	return users, nil
 }
 
-func GetUsersById(connection string, id int) ([]User, error) {
+func GetUsersByIdFromDB(connection string, id int) ([]User, error) {
 	conn, err := pgx.Connect(context.Background(), connection)
 	if err != nil {
 		log.Fatal(err)
@@ -66,7 +66,7 @@ func GetUsersById(connection string, id int) ([]User, error) {
 	var users []User
 	for rows.Next() {
 		user := User{}
-		err = rows.Scan(&user.ID, &user.UserName, &user.Email, &user.Password, &user.Country, &user.City)
+		err = rows.Scan(&user.ID, &user.UserName, &user.Email, &user.Password, &user.Country)
 		if err != nil {
 			return nil, err
 		}
@@ -88,13 +88,13 @@ func InsertUser(user User) error {
 	defer db.Close()
 
 	// Execute the SQL INSERT statement
-	stmt, err := db.Prepare("INSERT INTO Users(id, username, email, password, country, city) VALUES ($1, $2, $3, $4, $5, $6)")
+	stmt, err := db.Prepare("INSERT INTO Users(id, username, email, password, country) VALUES ($1, $2, $3, $4, $5)")
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(user.ID, user.UserName, user.Email, user.Password, user.Country, user.City)
+	_, err = stmt.Exec(user.ID, user.UserName, user.Email, user.Password, user.Country)
 	if err != nil {
 		return err
 	}
@@ -118,7 +118,7 @@ func GetUserByUsername(username string) (User, error) {
 
 	user := User{}
 	if row.Next() {
-		err = row.Scan(&user.ID, &user.UserName, &user.Email, &user.Password, &user.Country, &user.City)
+		err = row.Scan(&user.ID, &user.UserName, &user.Email, &user.Password, &user.Country)
 		if err != nil {
 			return User{}, err
 		}

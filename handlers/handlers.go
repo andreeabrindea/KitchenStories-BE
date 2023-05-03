@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"server-kitchen-stories/db"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -14,14 +15,20 @@ func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 }
 
-func ParseIDFromQueryString(r *http.Request) (int, error) {
-	idStr := r.URL.Query().Get("id")
+func ParseIDFromPath(r *http.Request) (int, error) {
+	pathParts := strings.Split(r.URL.Path, "/")
+	if len(pathParts) < 4 {
+		return 0, errors.New("invalid path")
+	}
+
+	idStr := pathParts[3]
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		return 0, errors.New("id should be an integer")
 	}
 	return id, nil
 }
+
 func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	if r.Method != http.MethodGet {
@@ -46,12 +53,12 @@ func GetUsersById(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	id, err := ParseIDFromQueryString(r)
+	id, err := ParseIDFromPath(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
-	users, err := db.GetUsersById("postgres://ejyvmpli:6ADd6xq0YUrVCyH0I7s1nfCT1Qv5gMVw@mouse.db.elephantsql.com/ejyvmpli", id)
+	users, err := db.GetUsersByIdFromDB("postgres://ejyvmpli:6ADd6xq0YUrVCyH0I7s1nfCT1Qv5gMVw@mouse.db.elephantsql.com/ejyvmpli", id)
 	if err != nil {
 		return
 	}
