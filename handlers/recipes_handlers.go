@@ -81,3 +81,27 @@ func AddRecipe(w http.ResponseWriter, r *http.Request) {
 	// Return a success response
 	w.WriteHeader(http.StatusCreated)
 }
+func GetRecipesByName(w http.ResponseWriter, r *http.Request) {
+	enableCors(r, &w)
+
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	name, err := ParseNameFromPath(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+	recipes, err := db.GetRecipesByName("postgres://ejyvmpli:6ADd6xq0YUrVCyH0I7s1nfCT1Qv5gMVw@mouse.db.elephantsql.com/ejyvmpli", name)
+	if err != nil {
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	output, _ := json.MarshalIndent(recipes, "", "  ")
+	_, err = w.Write(output)
+	if err != nil {
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}

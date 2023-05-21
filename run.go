@@ -36,6 +36,9 @@ func main() {
 		"/api/recipes",
 		handlers.AddRecipe,
 	)
+	http.HandleFunc(
+		"/api/recipes/",
+		handlers.GetRecipesByName)
 
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {

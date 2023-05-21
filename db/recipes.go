@@ -99,3 +99,38 @@ func InsertRecipe(recipe RecipeAdd) error {
 
 	return nil
 }
+
+func GetRecipesByName(connection string, name string) ([]Recipe, error) {
+	conn, err := pgx.Connect(context.Background(), connection)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	defer func(conn *pgx.Conn, ctx context.Context) {
+		err := conn.Close(ctx)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(conn, context.Background())
+
+	rows, err := conn.Query(context.Background(), "SELECT r.id, r.name as recipe_name, u.username as user_name, r.photo, r.ingredients, r.instructions FROM Recipe r JOIN Users u ON r.user_id = u.id WHERE r.name=$1", name)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var recipes []Recipe
+	for rows.Next() {
+		recipe := Recipe{}
+		err = rows.Scan(&recipe.ID, &recipe.Name, &recipe.UserID, &recipe.Photo, &recipe.Ingredients, &recipe.Instructions)
+		if err != nil {
+			return nil, err
+		}
+		recipes = append(recipes, recipe)
+	}
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+	return recipes, nil
+}

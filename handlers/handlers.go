@@ -33,6 +33,17 @@ func ParseIDFromPath(r *http.Request) (int, error) {
 	return id, nil
 }
 
+func ParseNameFromPath(r *http.Request) (string, error) {
+	pathParts := strings.Split(r.URL.Path, "/")
+	if len(pathParts) < 4 {
+		return "", errors.New("invalid path")
+	}
+
+	idStr := pathParts[3]
+
+	return idStr, nil
+}
+
 func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	enableCors(r, &w)
 	if r.Method != http.MethodGet {
