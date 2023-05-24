@@ -28,9 +28,6 @@ func main() {
 		"/api/users",
 		handlers.CreateUser,
 	)
-	http.HandleFunc(
-		"/login",
-		handlers.LoginHandler)
 
 	http.HandleFunc(
 		"/api/recipes",
