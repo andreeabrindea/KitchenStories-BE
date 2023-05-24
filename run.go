@@ -37,6 +37,10 @@ func main() {
 		"/api/recipes/",
 		handlers.GetRecipesByName)
 
+	http.HandleFunc(
+		"/login",
+		handlers.LoginHandler)
+
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		fmt.Println(err)
