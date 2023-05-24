@@ -113,7 +113,7 @@ func GetRecipesByName(connection string, name string) ([]Recipe, error) {
 		}
 	}(conn, context.Background())
 
-	rows, err := conn.Query(context.Background(), "SELECT r.id, r.name as recipe_name, u.username as user_name, r.photo, r.ingredients, r.instructions FROM Recipe r JOIN Users u ON r.user_id = u.id WHERE r.name=$1", name)
+	rows, err := conn.Query(context.Background(), "SELECT r.id, r.name as recipe_name, u.username as user_name, r.photo, r.ingredients, r.instructionsFROM Recipe rJOIN Users u ON r.user_id = u.id WHERE r.name LIKE '%' || $1 || '%'", name)
 	if err != nil {
 		return nil, err
 	}
